@@ -125,39 +125,47 @@
   line-height: 1.6;
 }
 
-/* รายการการ์ดแนวตั้ง */
+/* ตารางการ์ด 3 คอลัมน์ 2 แถว */
 
 .stage2-card-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+  align-items: stretch;
 }
 
 /* การ์ดพื้นฐาน */
 
 .stage2-card {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: stretch;
   justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
+
   width: 100%;
   min-width: 0;
-  min-height: 62px;
-  padding: 13px 14px;
-  background: #ffffff;
+  min-height: 125px;
+  padding: 10px 8px;
+
+  background: #f3f7f0;
   border: 1.5px solid #cbdceb;
-  border-left: 5px solid var(--stage2-color);
-  border-radius: 11px;
+  border-top: 4px solid var(--stage2-color);
+  border-radius: 12px;
+
   color: #34495e;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
-  line-height: 1.6;
-  text-align: left;
+  line-height: 1.5;
+  text-align: center;
+
   overflow-wrap: anywhere;
-  box-shadow: 0 2px 6px rgba(40, 70, 100, 0.05);
+  box-shadow: 0 2px 6px rgba(40, 70, 100, 0.07);
+
   cursor: pointer;
   touch-action: manipulation;
+
   transition:
     background 0.15s ease,
     border-color 0.15s ease,
@@ -165,10 +173,11 @@
 }
 
 .stage2-card:active {
-  transform: scale(0.985);
+  transform: scale(0.97);
 }
 
 .stage2-card__text {
+  display: block;
   flex: 1;
   min-width: 0;
   overflow-wrap: anywhere;
@@ -176,17 +185,20 @@
 }
 
 .stage2-card__number {
+  align-self: center;
   flex-shrink: 0;
-  padding: 5px 8px;
+
+  padding: 4px 7px;
   border-radius: 7px;
-  background: rgba(255, 255, 255, 0.75);
+
+  background: rgba(255, 255, 255, 0.85);
   color: #263746;
-  font-size: 11px;
+
+  font-size: 10px;
   font-weight: 800;
   line-height: 1.4;
   white-space: nowrap;
 }
-
 /* การ์ดที่กำลังเลือก */
 
 .stage2-card--selected {
@@ -275,15 +287,21 @@
     padding: 10px;
   }
 
+  .stage2-card-list {
+    gap: 6px;
+  }
+
   .stage2-card {
-    gap: 7px;
-    padding: 12px 10px;
-    font-size: 13px;
+    min-height: 115px;
+    padding: 8px 5px;
+    gap: 6px;
+    font-size: 11px;
+    line-height: 1.45;
   }
 
   .stage2-card__number {
-    padding: 4px 6px;
-    font-size: 10px;
+    padding: 4px 5px;
+    font-size: 9px;
   }
 
   .stage2-section-title {
