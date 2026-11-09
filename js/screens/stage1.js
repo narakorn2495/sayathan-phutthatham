@@ -441,7 +441,7 @@
             // ปิดการใช้งานทั้งหมดทันที
             submitButton.disabled = true;
 
-            var choiceButtons = cardList.querySelectorAll("button");
+            var choiceButtons = container.querySelectorAll("button");
 
             choiceButtons.forEach(function (button) {
               button.disabled = true;
