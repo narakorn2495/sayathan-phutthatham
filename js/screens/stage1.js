@@ -267,7 +267,10 @@
 
         highlightTimeout = setTimeout(function () {
           highlightTimeout = null;
-          renderCards(null);
+        
+          if (!finished) {
+            renderCards(null);
+          }
         }, 650);
       }
 
@@ -329,6 +332,11 @@
 
           onExpire: function () {
             if (finished) return;
+
+            if (highlightTimeout !== null) {
+              clearTimeout(highlightTimeout);
+              highlightTimeout = null;
+            }
 
             finished = true;
 
