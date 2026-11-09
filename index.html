@@ -1,0 +1,93 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f8f4ed">
+  <meta name="description" content="เกมการ์ดการศึกษา สายธารพุทธธรรม สำหรับนักเรียนชั้นมัธยมศึกษาปีที่ 6">
+  <title>สายธารพุทธธรรม | เกมการ์ดการศึกษา</title>
+
+  <!-- ฟอนต์ภาษาไทย -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/stage1.css">
+  <link rel="stylesheet" href="css/stage2.css">
+  <link rel="stylesheet" href="css/stage3.css">
+  <link rel="stylesheet" href="css/result.css">
+</head>
+<body>
+
+  <main class="app-container">
+
+    <header class="app-header">
+      <p class="app-header__subtitle">เกมการ์ดการศึกษา | สังคมศึกษา ม.6</p>
+      <h1>สายธารพุทธธรรม</h1>
+      <p class="app-header__description">
+        เรียนรู้เส้นทางพระพุทธศาสนาด้วยการคิด วิเคราะห์ และใช้เหตุผล
+      </p>
+    </header>
+
+    <!-- หน้าเริ่มเกม -->
+    <section id="screen-start" class="screen" aria-label="หน้าเริ่มเกม">
+      <div class="card">
+        <div id="start-content"></div>
+      </div>
+    </section>
+
+    <!-- ด่าน 1 -->
+    <section id="screen-stage1" class="screen" aria-label="ด่านที่ 1">
+      <div class="card">
+        <div id="stage1-content"></div>
+      </div>
+    </section>
+
+    <!-- ด่าน 2 -->
+    <section id="screen-stage2" class="screen" aria-label="ด่านที่ 2">
+      <div class="card">
+        <div id="stage2-content"></div>
+      </div>
+    </section>
+
+    <!-- ด่าน 3 -->
+    <section id="screen-stage3" class="screen" aria-label="ด่านที่ 3">
+      <div class="card">
+        <div id="stage3-content"></div>
+      </div>
+    </section>
+
+    <!-- หน้าสรุปผล -->
+    <section id="screen-result" class="screen" aria-label="สรุปผลการเล่น">
+      <div class="card">
+        <div id="result-content"></div>
+      </div>
+    </section>
+
+    <footer class="app-footer">
+      <p>สายธารพุทธธรรม | สังคมศึกษา ม.6</p>
+    </footer>
+
+  </main>
+
+  <!-- JavaScript: โหลดตามลำดับโมดูล -->
+  <script src="js/config.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/timer.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/scoring.js"></script>
+
+  <script src="js/screens/start.js"></script>
+  <script src="js/screens/stage1.js"></script>
+  <script src="js/screens/stage2.js"></script>
+  <script src="js/screens/stage3.js"></script>
+  <script src="js/screens/result.js"></script>
+
+  <script src="js/main.js"></script>
+
+</body>
+</html>
