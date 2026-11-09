@@ -1,1 +1,286 @@
 
+/* ========================================
+   RESULT SCREEN
+======================================== */
+
+.result-container {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px 16px 40px;
+}
+
+.result-header {
+  text-align: center;
+  padding: 28px 20px;
+  margin-bottom: 24px;
+  background: #f0f7f3;
+  border: 1px solid #d5e9dc;
+  border-radius: 20px;
+}
+
+.result-title {
+  margin: 0 0 12px;
+  color: #245c40;
+  font-size: 1.7rem;
+}
+
+.result-student {
+  margin: 6px 0;
+  color: #52645a;
+}
+
+.result-total {
+  margin: 20px 0 8px;
+  color: #176b45;
+  font-size: clamp(3rem, 10vw, 5rem);
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.result-total-label {
+  color: #64748b;
+  font-size: 0.95rem;
+}
+
+.result-stage-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.result-stage-card {
+  padding: 18px 12px;
+  text-align: center;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+}
+
+.result-stage-card__title {
+  margin: 0 0 10px;
+  color: #475569;
+  font-size: 0.95rem;
+}
+
+.result-stage-card__score {
+  color: #176b45;
+  font-size: 1.8rem;
+  font-weight: 800;
+}
+
+.result-stage-card__time {
+  margin-top: 6px;
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+.result-timeout {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 4px 9px;
+  color: #92400e;
+  background: #fef3c7;
+  border-radius: 20px;
+  font-size: 0.78rem;
+}
+
+.result-save {
+  padding: 16px;
+  margin: 20px 0;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+}
+
+.result-save--success {
+  color: #166534;
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+}
+
+.result-save--error {
+  color: #991b1b;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+.result-save__message {
+  margin: 0;
+  font-weight: 600;
+}
+
+.result-save__detail {
+  margin-top: 8px;
+  font-size: 0.9rem;
+}
+
+.result-retry-btn {
+  margin-top: 12px;
+}
+
+.result-section {
+  margin: 24px 0;
+}
+
+.result-section__title {
+  margin-bottom: 12px;
+  color: #334155;
+  font-size: 1.2rem;
+}
+
+.result-accordion {
+  margin-bottom: 12px;
+  overflow: hidden;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+}
+
+.result-accordion__summary {
+  padding: 16px;
+  cursor: pointer;
+  font-weight: 700;
+  color: #334155;
+  background: #f8fafc;
+}
+
+.result-accordion__content {
+  padding: 16px;
+}
+
+.result-answer-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.result-answer-item {
+  padding: 13px;
+  background: #f8fafc;
+  border-radius: 10px;
+}
+
+.result-answer-item--correct {
+  border-left: 4px solid #16a34a;
+}
+
+.result-answer-item--wrong {
+  border-left: 4px solid #dc2626;
+}
+
+.result-answer-item__status {
+  font-weight: 700;
+}
+
+.result-correct {
+  color: #15803d;
+}
+
+.result-wrong {
+  color: #dc2626;
+}
+
+.result-unanswered {
+  color: #64748b;
+}
+
+.result-answer-item__text {
+  margin-top: 6px;
+  line-height: 1.6;
+}
+
+.result-debrief {
+  padding: 15px;
+  margin-top: 16px;
+  color: #475569;
+  background: #eff6ff;
+  border-radius: 12px;
+  line-height: 1.7;
+}
+
+.result-learning {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.result-learning a {
+  display: inline-block;
+  padding: 11px 15px;
+  color: #1d4ed8;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.result-learning a:hover {
+  background: #dbeafe;
+}
+
+.result-actions {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.result-play-again {
+  min-width: 200px;
+  padding: 14px 24px;
+  font-size: 1.05rem;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 600px) {
+  .result-container {
+    padding: 14px 10px 30px;
+  }
+
+  .result-header {
+    padding: 24px 14px;
+  }
+
+  .result-title {
+    font-size: 1.4rem;
+  }
+
+  .result-stage-list {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .result-stage-card {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    text-align: left;
+    gap: 4px 12px;
+  }
+
+  .result-stage-card__title {
+    margin: 0;
+  }
+
+  .result-stage-card__score {
+    grid-column: 2;
+    grid-row: 1 / 3;
+  }
+
+  .result-stage-card__time {
+    margin: 0;
+  }
+
+  .result-learning {
+    flex-direction: column;
+  }
+
+  .result-learning a {
+    text-align: center;
+  }
+}
+
