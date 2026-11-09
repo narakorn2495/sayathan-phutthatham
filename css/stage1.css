@@ -276,3 +276,169 @@
     font-size: 14px;
   }
 }
+
+
+/* ========================================
+   Stage 1 — Compact Card Placement UI
+======================================== */
+
+/* พื้นที่เส้นเวลา */
+.stage1-board {
+  padding: 10px;
+  margin: 8px 0 12px;
+}
+
+.stage1-slot-list {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.stage1-slot {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  min-height: 92px;
+  padding: 6px 3px;
+  cursor: pointer;
+  background: #fff;
+}
+
+.stage1-slot--filled {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 22px;
+  grid-template-rows: 20px 1fr;
+  gap: 3px;
+  padding: 5px;
+}
+
+.stage1-slot__number {
+  grid-column: 1 / -1;
+  width: 23px;
+  height: 23px;
+  font-size: 12px;
+}
+
+.stage1-slot__card {
+  font-size: 10px;
+  line-height: 1.35;
+  text-align: center;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.stage1-slot__remove {
+  width: 22px;
+  height: 22px;
+  font-size: 17px;
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.stage1-slot__placeholder {
+  font-size: 10px;
+  text-align: center;
+}
+
+/* พื้นที่พักการ์ด */
+.stage1-staging {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 78px;
+  padding: 10px;
+  margin: 10px 0;
+  border: 2px dashed #d69a50;
+  border-radius: 12px;
+  background: #fff8ee;
+}
+
+.stage1-staged-card {
+  flex: 1;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid #e8b875;
+  border-radius: 9px;
+  background: white;
+  color: #65421f;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.stage1-staging-empty {
+  color: #9b846a;
+  font-size: 13px;
+  text-align: center;
+}
+
+.stage1-staging-cancel {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 50%;
+  background: #ffe1dc;
+  color: #c0392b;
+  font-size: 25px;
+  cursor: pointer;
+}
+
+/* มือการ์ดผู้เล่น */
+.stage1-choices {
+  margin: 10px 0;
+}
+
+.stage1-choice-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  max-height: 220px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 4px;
+}
+
+.stage1-choice-card {
+  min-width: 0;
+  min-height: 64px;
+  padding: 9px;
+  font-size: 12px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+/* ปุ่มส่งคำตอบ */
+.stage1-submit-bar {
+  padding: 8px 0;
+  margin-top: 5px;
+}
+
+/* มือถือจอเล็ก */
+@media (max-width: 360px) {
+  .stage1-slot-list {
+    gap: 4px;
+  }
+
+  .stage1-slot {
+    min-height: 82px;
+    padding: 4px 2px;
+  }
+
+  .stage1-slot__card {
+    font-size: 9px;
+  }
+
+  .stage1-choice-list {
+    max-height: 190px;
+  }
+}
+
