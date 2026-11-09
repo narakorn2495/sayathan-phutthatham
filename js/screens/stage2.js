@@ -196,37 +196,45 @@
 
       // เลือกการ์ดลักษณะเพื่อจับคู่
       function selectTrait(traitId) {
-        if (locked || completed) return;
-
-        if (selectedLand === null) {
-          showNotice("กรุณาเลือกดินแดนก่อน แล้วจึงเลือกลักษณะ", "info");
+      if (locked || completed) return;
+    
+      var oldLand = findLandByTrait(traitId);
+    
+      // หากยังไม่ได้เลือกดินแดน
+      if (selectedLand === null) {
+        // แตะการ์ดลักษณะที่จับคู่แล้วเพื่อยกเลิกคู่
+        if (oldLand !== null) {
+          unpairLand(oldLand);
+          clearNotice();
+          renderBoard();
           return;
         }
-
-        var oldLand = findLandByTrait(traitId);
-
-        // หากการ์ดลักษณะถูกจับคู่กับดินแดนอื่นอยู่
-        // ให้ย้ายคู่มาเป็นดินแดนที่เลือก
-        if (oldLand !== null) {
-          if (oldLand === selectedLand) {
-            // แตะการ์ดคู่เดิมเพื่อยกเลิกคู่
-            unpairLand(oldLand);
-            selectedLand = null;
-          } else {
-            // ยกเลิกคู่เดิม แล้วจับคู่ใหม่
-            unpairLand(oldLand);
-            pairs[selectedLand] = traitId;
-            selectedLand = null;
-          }
+    
+        showNotice(
+          "กรุณาเลือกดินแดนก่อน แล้วจึงเลือกลักษณะ",
+          "info"
+        );
+        return;
+      }
+    
+      // หากการ์ดลักษณะถูกจับคู่กับดินแดนอื่นอยู่
+      if (oldLand !== null) {
+        if (oldLand === selectedLand) {
+          unpairLand(oldLand);
+          selectedLand = null;
         } else {
-          // จับคู่การ์ดที่ยังว่าง
+          unpairLand(oldLand);
           pairs[selectedLand] = traitId;
           selectedLand = null;
         }
-
-        clearNotice();
-        renderBoard();
+      } else {
+        pairs[selectedLand] = traitId;
+        selectedLand = null;
       }
+    
+      clearNotice();
+      renderBoard();
+    }
 
       // สร้างการ์ดหนึ่งใบ
       function createCard(id, text, group, pairNumber, isSelected) {
