@@ -23,7 +23,10 @@
       apiUrl.indexOf("PASTE_") !== -1
     ) {
       return Promise.reject(
-        createError("ยังไม่ได้ตั้งค่า API_URL ใน js/config.js", "config")
+        createError(
+          "ยังไม่ได้ตั้งค่า API_URL ใน js/config.js",
+          "config"
+        )
       );
     }
 
@@ -38,6 +41,7 @@
 
     function attempt(retryCount) {
       var controller = new AbortController();
+
       var timeoutId = setTimeout(function () {
         controller.abort();
       }, 15000);
@@ -49,7 +53,9 @@
         .then(function (response) {
           if (!response.ok) {
             throw createError(
-              "เซิร์ฟเวอร์ตอบกลับผิดพลาด (" + response.status + ")",
+              "เซิร์ฟเวอร์ตอบกลับผิดพลาด (" +
+                response.status +
+                ")",
               "server"
             );
           }
@@ -59,7 +65,10 @@
         .then(function (data) {
           if (data && data.ok === false) {
             if (data.error === "busy") {
-              throw createError("เซิร์ฟเวอร์กำลังทำงาน กรุณาลองอีกครั้ง", "busy");
+              throw createError(
+                "เซิร์ฟเวอร์กำลังทำงาน กรุณาลองอีกครั้ง",
+                "busy"
+              );
             }
 
             throw createError(
@@ -75,11 +84,18 @@
               : null;
 
           if (!students) {
-            throw createError("รูปแบบข้อมูลรายชื่อไม่ถูกต้อง", "data");
+            throw createError(
+              "รูปแบบข้อมูลรายชื่อไม่ถูกต้อง",
+              "data"
+            );
           }
 
           rosterCache[className] = students;
+
           return students;
+        })
+        .finally(function () {
+          clearTimeout(timeoutId);
         })
         .catch(function (error) {
           var shouldRetry =
@@ -99,9 +115,6 @@
           }
 
           throw error;
-        })
-        .finally(function () {
-          clearTimeout(timeoutId);
         });
     }
 
@@ -111,7 +124,7 @@
   window.App.api = {
     getRoster: getRoster,
 
-    // จะพัฒนาระบบบันทึกผลใน Step 7
+    // คงเป็น stub สำหรับ Step 7
     submitResult: function () {
       return Promise.reject(
         new Error("ระบบบันทึกผลยังไม่พร้อมใช้งาน")
