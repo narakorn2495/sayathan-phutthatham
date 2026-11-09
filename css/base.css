@@ -1,0 +1,289 @@
+
+/* ========================================
+   สายธารพุทธธรรม - Base Styles
+   ======================================== */
+
+:root {
+  /* สีประจำด่าน */
+  --stage1-color: #e88a35;
+  --stage1-light: #fff0df;
+
+  --stage2-color: #397bbd;
+  --stage2-light: #e8f2fc;
+
+  --stage3-color: #c94c4c;
+  --stage3-light: #fceaea;
+
+  /* สีพื้นและข้อความ */
+  --bg-color: #f8f4ed;
+  --surface-color: #ffffff;
+  --text-color: #343434;
+  --muted-color: #777777;
+  --border-color: #e6dfd4;
+
+  /* สีสถานะ */
+  --success-color: #27834c;
+  --error-color: #c0392b;
+  --warning-color: #d98219;
+
+  /* รูปแบบ */
+  --radius: 14px;
+  --shadow: 0 3px 14px rgba(60, 45, 25, 0.07);
+}
+
+/* Reset */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  padding: 20px 12px;
+  min-height: 100vh;
+  background: var(--bg-color);
+  color: var(--text-color);
+  font-family: "Sarabun", "Noto Sans Thai", Tahoma, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: 16px;
+}
+
+button {
+  touch-action: manipulation;
+}
+
+/* โครงสร้างหลัก */
+.app-container {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.app-header {
+  text-align: center;
+  margin: 12px 0 24px;
+}
+
+.app-header h1 {
+  margin: 4px 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: #73512f;
+  line-height: 1.4;
+}
+
+.app-header__subtitle {
+  margin: 0;
+  color: var(--muted-color);
+  font-size: 14px;
+}
+
+.app-header__description {
+  margin: 6px 0 0;
+  color: var(--muted-color);
+  font-size: 15px;
+}
+
+.app-footer {
+  text-align: center;
+  color: var(--muted-color);
+  font-size: 13px;
+  margin: 24px 0 12px;
+}
+
+/* ระบบเปลี่ยนหน้า */
+.screen {
+  display: none;
+  width: 100%;
+}
+
+.screen--active {
+  display: block;
+}
+
+/* การ์ดพื้นฐาน */
+.card {
+  width: 100%;
+  padding: 20px;
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+/* หัวข้อ */
+h2 {
+  margin-top: 0;
+  font-size: 22px;
+  line-height: 1.5;
+}
+
+h3 {
+  font-size: 18px;
+}
+
+p {
+  overflow-wrap: anywhere;
+}
+
+/* ปุ่มหลัก */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 16px;
+  border: 0;
+  border-radius: 10px;
+  background: #795b3b;
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ปุ่มรอง */
+.btn--secondary {
+  background: #eee8df;
+  color: #554735;
+  border: 1px solid var(--border-color);
+}
+
+.btn--outline {
+  background: transparent;
+  color: #795b3b;
+  border: 1px solid #795b3b;
+}
+
+.btn + .btn {
+  margin-top: 10px;
+}
+
+/* พื้นที่ปุ่ม */
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+/* การ์ดข้อมูล */
+.game-card {
+  padding: 14px;
+  margin: 10px 0;
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  overflow-wrap: anywhere;
+}
+
+/* ป้ายสถานะ */
+.status {
+  padding: 12px;
+  border-radius: 10px;
+  margin: 12px 0;
+}
+
+.status--loading {
+  background: #edf4fc;
+  color: #245d91;
+}
+
+.status--error {
+  background: #fff0ed;
+  color: var(--error-color);
+}
+
+.status--success {
+  background: #eaf7ee;
+  color: var(--success-color);
+}
+
+/* พื้นที่กำลังโหลด */
+.loading {
+  padding: 20px;
+  text-align: center;
+  color: var(--muted-color);
+}
+
+.loading::before {
+  content: "";
+  display: block;
+  width: 24px;
+  height: 24px;
+  margin: 0 auto 10px;
+  border: 3px solid #e8dfd2;
+  border-top-color: #795b3b;
+  border-radius: 50%;
+  animation: loading-spin 0.8s linear infinite;
+}
+
+@keyframes loading-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ข้อความทั่วไป */
+.muted {
+  color: var(--muted-color);
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mt-16 {
+  margin-top: 16px;
+}
+
+/* รองรับมือถือ */
+@media (max-width: 360px) {
+  body {
+    padding: 12px 10px;
+  }
+
+  .card {
+    padding: 14px;
+  }
+
+  .app-header h1 {
+    font-size: 25px;
+  }
+}
+
+/* ป้องกันการแสดงผลล้นแนวนอน */
+img,
+video,
+iframe {
+  max-width: 100%;
+}
