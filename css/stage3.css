@@ -1,1 +1,265 @@
 
+/* ========================================
+   Stage 3 - พุทธแท้ / พุทธปน
+======================================== */
+
+.stage3-heading {
+  color: var(--stage3-color);
+  margin-bottom: 6px;
+}
+
+.stage3-title {
+  color: #9f3535;
+  margin: 8px 0;
+  line-height: 1.5;
+}
+
+.stage3-instruction {
+  color: var(--muted-color);
+  margin: 8px 0 16px;
+  font-size: 15px;
+}
+
+.stage3-info {
+  padding: 10px 14px;
+  margin: 8px 0;
+  background: var(--stage3-light);
+  color: #963c3c;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.stage3-start-btn {
+  margin-top: 20px;
+  background: var(--stage3-color);
+}
+
+/* แถบจำนวนคำตอบ */
+
+.stage3-status {
+  position: sticky;
+  top: 0;
+  z-index: 21;
+  padding: 11px 14px;
+  margin: 12px 0;
+  background: #ffffff;
+  border: 1px solid #e9bcbc;
+  border-radius: 12px;
+  box-shadow: 0 3px 12px rgba(120, 35, 35, 0.10);
+}
+
+.stage3-status__progress {
+  color: #a83232;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* ข้อความแจ้งเตือน */
+
+.stage3-notice {
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  text-align: center;
+  border-radius: 9px;
+}
+
+.stage3-notice:not(:empty) {
+  padding: 9px 12px;
+  margin-bottom: 10px;
+}
+
+.stage3-notice--warning {
+  background: #fff5e5;
+  color: #9a641d;
+}
+
+.stage3-notice--timeout {
+  background: #fff0ed;
+  color: var(--error-color);
+  font-size: 17px;
+  font-weight: 700;
+}
+
+/* รายการการ์ด */
+
+.stage3-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 10px 0 18px;
+}
+
+/* การ์ดแต่ละใบ */
+
+.stage3-card {
+  width: 100%;
+  padding: 12px;
+  background: #ffffff;
+  border: 1px solid #ecd5d5;
+  border-left: 4px solid var(--stage3-color);
+  border-radius: 11px;
+  box-shadow: 0 2px 7px rgba(90, 35, 35, 0.05);
+}
+
+.stage3-card__text {
+  margin-bottom: 10px;
+  color: #343434;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+/* ปุ่มจำแนกสองกลุ่ม */
+
+.stage3-card__buttons {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.stage3-label-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  padding: 8px 5px;
+  border: 1.5px solid;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.1s ease;
+}
+
+.stage3-label-btn:active {
+  transform: scale(0.97);
+}
+
+/* ปุ่มพุทธแท้ */
+
+.stage3-label-btn--pure {
+  background: #fff4f2;
+  color: #a83b35;
+  border-color: #dfaaa5;
+}
+
+.stage3-label-btn--pure.stage3-label-btn--selected {
+  background: #c94c4c;
+  color: #ffffff;
+  border-color: #a83232;
+}
+
+/* ปุ่มพุทธปน */
+
+.stage3-label-btn--mixed {
+  background: #fff0f0;
+  color: #983c48;
+  border-color: #dfadb5;
+}
+
+.stage3-label-btn--mixed.stage3-label-btn--selected {
+  background: #8f3544;
+  color: #ffffff;
+  border-color: #762938;
+}
+
+/* เครื่องหมายเลือก */
+
+.stage3-label-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 19px;
+  height: 19px;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+/* สถานะล็อก */
+
+.stage3-label-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.75;
+}
+
+/* ปุ่มส่งคำตอบ */
+
+.stage3-submit-bar {
+  position: sticky;
+  bottom: 10px;
+  z-index: 20;
+  padding: 10px 0;
+  margin-top: 8px;
+  background: linear-gradient(
+    to bottom,
+    rgba(248, 244, 237, 0),
+    var(--bg-color) 25%
+  );
+}
+
+.stage3-submit-btn {
+  background: var(--stage3-color);
+  box-shadow: 0 3px 10px rgba(160, 50, 50, 0.18);
+}
+
+.stage3-submit-btn:disabled {
+  opacity: 0.55;
+}
+
+/* มือถือจอเล็ก */
+
+@media (max-width: 360px) {
+  .stage3-card {
+    padding: 10px;
+  }
+
+  .stage3-card__text {
+    font-size: 14px;
+  }
+
+  .stage3-label-btn {
+    font-size: 13px;
+    min-height: 40px;
+    gap: 3px;
+  }
+
+  .stage3-card__buttons {
+    gap: 6px;
+  }
+}
+
+/* หน้าจอขนาดใหญ่ */
+
+@media (min-width: 600px) {
+  .stage3-card {
+    padding: 16px;
+  }
+
+  .stage3-card__text {
+    font-size: 16px;
+  }
+
+  .stage3-card__buttons {
+    gap: 12px;
+  }
+
+  .stage3-label-btn {
+    min-height: 46px;
+    font-size: 15px;
+  }
+}
+
