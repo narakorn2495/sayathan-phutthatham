@@ -30,6 +30,8 @@
       var listeners = [];
       var slots = [];
       var available = [];
+      var stagingId = null;
+      var stagingArea = null;
 
       var started = false;
       var locked = false;
@@ -182,6 +184,61 @@
         }).length;
       }
 
+      // นำการ์ดจากมือผู้เล่นเข้าพื้นที่พัก
+      function stageCard(id) {
+        if (locked || completed) return;
+      
+        var index = available.indexOf(id);
+        if (index === -1) return;
+      
+        // คืนการ์ดเดิมในพื้นที่พักกลับไปที่มือ
+        if (stagingId !== null) {
+          available.push(stagingId);
+        }
+      
+        available.splice(index, 1);
+        stagingId = id;
+      
+        renderBoard();
+      }
+      
+      // ยกเลิกการ์ดในพื้นที่พัก
+      function cancelStaging() {
+        if (locked || completed || stagingId === null) return;
+      
+        available.push(stagingId);
+        stagingId = null;
+      
+        renderBoard();
+      }
+
+// วางการ์ดลงในช่องเส้นเวลา
+function placeCard(index) {
+  if (locked || completed) return;
+
+  if (index < 0 || index >= slots.length) return;
+
+  // หากยังไม่มีการ์ดในพื้นที่พัก
+  // ให้แตะการ์ดที่วางอยู่เพื่อหยิบกลับมาพัก
+  if (stagingId === null) {
+    if (slots[index] === null) return;
+
+    stagingId = slots[index];
+    slots[index] = null;
+
+    renderBoard();
+    return;
+  }
+
+  // สลับการ์ดกับช่องที่เลือก
+  var oldId = slots[index];
+
+  slots[index] = stagingId;
+  stagingId = oldId;
+
+  renderBoard();
+}
+
       // แสดงจำนวนการ์ดที่เลือก
       function updateProgress() {
         var count = selectedCount();
@@ -242,9 +299,11 @@
         slots.forEach(function (id, index) {
           var slot = App.ui.el("div", {
             className: "stage1-slot" +
-              (id !== null ? " stage1-slot--filled" : "")
+              (id !== null ? " stage1-slot--filled" : ""),
+            "data-action": "slot",
+            "data-index": String(index)
           });
-
+        
           var number = App.ui.el("span", {
             className: "stage1-slot__number",
             textContent: String(index + 1)
@@ -272,7 +331,7 @@
           } else {
             var placeholder = App.ui.el("span", {
               className: "stage1-slot__placeholder",
-              textContent: "แตะเลือกการ์ด"
+              textContent: "แตะเพื่อวาง"
             });
 
             slot.appendChild(placeholder);
@@ -280,6 +339,37 @@
 
           slotList.appendChild(slot);
         });
+
+        // แสดงการ์ดในพื้นที่พัก
+        if (stagingArea) {
+          stagingArea.textContent = "";
+        
+          if (stagingId !== null) {
+            var stagedCard = App.ui.el("div", {
+              className: "stage1-staged-card",
+              textContent: cards[stagingId]
+            });
+        
+            var cancelButton = App.ui.el("button", {
+              className: "stage1-staging-cancel",
+              type: "button",
+              textContent: "×",
+              "aria-label": "ยกเลิกการ์ดที่พัก"
+            });
+        
+            addEvent(cancelButton, "click", cancelStaging);
+        
+            stagingArea.appendChild(stagedCard);
+            stagingArea.appendChild(cancelButton);
+          } else {
+            stagingArea.appendChild(
+              App.ui.el("span", {
+                className: "stage1-staging-empty",
+                textContent: "แตะการ์ดด้านล่างเพื่อเลือก"
+              })
+            );
+          }
+        }
 
         // ส่วนการ์ดที่ยังไม่ได้เลือก
         available.forEach(function (id) {
@@ -346,6 +436,12 @@
 
         cardList = cardListElement;
 
+        var stagingElement = App.ui.el("div", {
+          className: "stage1-staging"
+        });
+        
+        stagingArea = stagingElement;
+
         var submitBar = App.ui.el("div", {
           className: "stage1-submit-bar"
         });
@@ -362,29 +458,37 @@
         // แตะการ์ดที่ยังไม่ได้เลือก
         addEvent(cardList, "click", function (event) {
           if (locked || completed) return;
-
+        
           var target = event.target.closest(
             '[data-action="select"]'
           );
-
+        
           if (!target || !cardList.contains(target)) return;
-
-          selectCard(target.getAttribute("data-id"));
+        
+          stageCard(target.getAttribute("data-id"));
         });
-
+        
         // กด X เพื่อนำการ์ดออก
         addEvent(slotList, "click", function (event) {
           if (locked || completed) return;
-
-          var target = event.target.closest(
-            '[data-action="remove"]'
+        
+          var target = event.target.closest("button[data-action='remove']");
+        
+          if (target && slotList.contains(target)) {
+            var index = Number(target.getAttribute("data-index"));
+            removeCard(index);
+            return;
+          }
+        
+          var slot = event.target.closest(
+            '[data-action="slot"]'
           );
-
-          if (!target || !slotList.contains(target)) return;
-
-          var index = Number(target.getAttribute("data-index"));
-
-          removeCard(index);
+        
+          if (!slot || !slotList.contains(slot)) return;
+        
+          var slotIndex = Number(slot.getAttribute("data-index"));
+        
+          placeCard(slotIndex);
         });
 
         // ส่งคำตอบ
@@ -416,6 +520,7 @@
         choices.appendChild(cardListElement);
 
         container.appendChild(board);
+        container.appendChild(stagingElement);
         container.appendChild(choices);
         container.appendChild(submitBar);
 
