@@ -14,26 +14,26 @@
       App.ui.showScreen("stage1");
 
       var container = document.getElementById("stage1-content");
-
       if (!container) return;
 
       container.textContent = "";
 
       var gameData = window.GAME_DATA.stage1;
       var cards = gameData.cards;
-      var answerOrder = gameData.answerOrder;
-
       var config = App.config || {};
       var durationSec = Number(config.STAGE_TIME_SEC) || 120;
 
       var timer = null;
       var timerBar = null;
-      var highlightTimeout = null;
+      var timeoutId = null;
 
       var listeners = [];
-      var order = [];
-      var finished = false;
+      var slots = [];
+      var available = [];
+
       var started = false;
+      var locked = false;
+      var completed = false;
 
       // จัดการ Event เพื่อให้ล้างได้เมื่อจบด่าน
       function addEvent(element, eventName, handler) {
@@ -52,9 +52,9 @@
           timer = null;
         }
 
-        if (highlightTimeout !== null) {
-          clearTimeout(highlightTimeout);
-          highlightTimeout = null;
+        if (timeoutId !== null) {
+          clearTimeout(timeoutId);
+          timeoutId = null;
         }
 
         listeners.forEach(function (item) {
@@ -74,9 +74,10 @@
 
       // ส่งผลลัพธ์เพียงครั้งเดียว
       function finish(timedOut) {
-        if (finished) return;
+        if (completed) return;
 
-        finished = true;
+        completed = true;
+        locked = true;
 
         var timeUsed = timer
           ? timer.elapsedSec()
@@ -87,37 +88,39 @@
         if (typeof options.onDone === "function") {
           options.onDone({
             answers: {
-              order: order.slice()
+              order: slots.slice()
             },
-            timeUsedSec: timeUsed,
+            timeUsedSec: timedOut ? durationSec : timeUsed,
             timedOut: Boolean(timedOut)
           });
         }
       }
 
-      // สุ่มการ์ดใหม่
+      // สุ่มการ์ดใหม่ และป้องกันลำดับตรงกับเฉลย
       function shuffleCards() {
         var ids = Object.keys(cards);
+        var answerOrder = gameData.answerOrder;
 
-        order = App.ui.shuffle(ids);
+        available = App.ui.shuffle(ids);
 
         var attempts = 0;
 
         while (
-          order.join("|") === answerOrder.join("|") &&
+          available.join("|") === answerOrder.join("|") &&
           attempts < 20
         ) {
-          order = App.ui.shuffle(ids);
+          available = App.ui.shuffle(ids);
           attempts++;
         }
 
-        // ป้องกันกรณีสุ่มได้ลำดับเดิมซ้ำทุกครั้ง
-        if (order.join("|") === answerOrder.join("|")) {
-          order.push(order.shift());
+        if (available.join("|") === answerOrder.join("|")) {
+          available.push(available.shift());
         }
+
+        slots = new Array(ids.length).fill(null);
       }
 
-      // สร้างหน้าคำอธิบายก่อนเริ่มเกม
+      // หน้าคำอธิบาย
       function showIntroduction() {
         var heading = App.ui.el("h2", {
           className: "stage1-heading",
@@ -151,7 +154,7 @@
         });
 
         addEvent(button, "click", function () {
-          if (started || finished) return;
+          if (started || completed) return;
 
           started = true;
           showGame();
@@ -165,113 +168,134 @@
         container.appendChild(button);
       }
 
-      // แสดงรายการการ์ด
-      function renderCards(highlightId) {
-        var list = document.getElementById("stage1-card-list");
-
-        if (!list) return;
-
-        // ล้าง Event ของปุ่มชุดเดิมก่อนสร้างใหม่
-        listeners = listeners.filter(function (item) {
-          if (item.element.closest("#stage1-card-list")) {
-            item.element.removeEventListener(
-              item.eventName,
-              item.handler
-            );
-
-            return false;
-          }
-
-          return true;
-        });
-
-        list.textContent = "";
-
-        order.forEach(function (id, index) {
-          var item = App.ui.el("div", {
-            className: "stage1-card" +
-              (id === highlightId
-                ? " stage1-card--highlight"
-                : "")
-          });
-
-          var number = App.ui.el("span", {
-            className: "stage1-card__number",
-            textContent: String(index + 1)
-          });
-
-          var text = App.ui.el("div", {
-            className: "stage1-card__text",
-            textContent: cards[id]
-          });
-
-          var controls = App.ui.el("div", {
-            className: "stage1-card__controls"
-          });
-
-          var upButton = App.ui.el("button", {
-            className: "stage1-move-btn",
-            type: "button",
-            textContent: "▲",
-            disabled: index === 0,
-            "aria-label": "เลื่อนขึ้น"
-          });
-
-          var downButton = App.ui.el("button", {
-            className: "stage1-move-btn",
-            type: "button",
-            textContent: "▼",
-            disabled: index === order.length - 1,
-            "aria-label": "เลื่อนลง"
-          });
-
-          addEvent(upButton, "click", function () {
-            moveCard(index, -1);
-          });
-
-          addEvent(downButton, "click", function () {
-            moveCard(index, 1);
-          });
-
-          controls.appendChild(upButton);
-          controls.appendChild(downButton);
-
-          item.appendChild(number);
-          item.appendChild(text);
-          item.appendChild(controls);
-
-          list.appendChild(item);
+      // ตรวจสอบว่าจัดครบทุกช่องหรือยัง
+      function isComplete() {
+        return slots.every(function (id) {
+          return id !== null;
         });
       }
 
-      // เลื่อนการ์ดขึ้นหรือลง
-      function moveCard(index, direction) {
-        if (finished) return;
+      // นับจำนวนการ์ดที่เลือกแล้ว
+      function selectedCount() {
+        return slots.filter(function (id) {
+          return id !== null;
+        }).length;
+      }
 
-        var target = index + direction;
+      // แสดงจำนวนการ์ดที่เลือก
+      function updateProgress() {
+        var count = selectedCount();
 
-        if (target < 0 || target >= order.length) return;
+        progressText.textContent =
+          "เลือกแล้ว " + count + " / " + slots.length + " ใบ";
 
-        var temp = order[index];
+        submitButton.disabled = !isComplete() || locked;
+      }
 
-        order[index] = order[target];
-        order[target] = temp;
+      // เลือกการ์ดใส่ช่องว่างช่องแรก
+      function selectCard(id) {
+        if (locked || completed) return;
 
-        var movedId = order[target];
+        var availableIndex = available.indexOf(id);
 
-        renderCards(movedId);
+        if (availableIndex === -1) return;
 
-        if (highlightTimeout !== null) {
-          clearTimeout(highlightTimeout);
+        var emptyIndex = slots.indexOf(null);
+
+        if (emptyIndex === -1) return;
+
+        slots[emptyIndex] = id;
+
+        available.splice(availableIndex, 1);
+
+        renderBoard();
+      }
+
+      // ยกเลิกการ์ดจากช่องที่เลือก
+      function removeCard(index) {
+        if (locked || completed) return;
+
+        if (
+          index < 0 ||
+          index >= slots.length ||
+          slots[index] === null
+        ) {
+          return;
         }
 
-        highlightTimeout = setTimeout(function () {
-          highlightTimeout = null;
-        
-          if (!finished) {
-            renderCards(null);
+        var removedId = slots[index];
+
+        slots[index] = null;
+
+        // นำการ์ดกลับไปท้ายรายการ
+        available.push(removedId);
+
+        renderBoard();
+      }
+
+      // สร้างช่องคำตอบและรายการการ์ด
+      function renderBoard() {
+        slotList.textContent = "";
+        cardList.textContent = "";
+
+        // ส่วนช่องคำตอบ 10 ช่อง
+        slots.forEach(function (id, index) {
+          var slot = App.ui.el("div", {
+            className: "stage1-slot" +
+              (id !== null ? " stage1-slot--filled" : "")
+          });
+
+          var number = App.ui.el("span", {
+            className: "stage1-slot__number",
+            textContent: String(index + 1)
+          });
+
+          slot.appendChild(number);
+
+          if (id !== null) {
+            var card = App.ui.el("div", {
+              className: "stage1-slot__card",
+              textContent: cards[id]
+            });
+
+            var removeButton = App.ui.el("button", {
+              className: "stage1-slot__remove",
+              type: "button",
+              textContent: "×",
+              "aria-label": "ยกเลิกการ์ดลำดับที่ " + (index + 1),
+              "data-action": "remove",
+              "data-index": String(index)
+            });
+
+            slot.appendChild(card);
+            slot.appendChild(removeButton);
+          } else {
+            var placeholder = App.ui.el("span", {
+              className: "stage1-slot__placeholder",
+              textContent: "แตะเลือกการ์ด"
+            });
+
+            slot.appendChild(placeholder);
           }
-        }, 650);
+
+          slotList.appendChild(slot);
+        });
+
+        // ส่วนการ์ดที่ยังไม่ได้เลือก
+        available.forEach(function (id) {
+          var cardButton = App.ui.el("button", {
+            className: "stage1-choice-card",
+            type: "button",
+            textContent: cards[id],
+            "data-action": "select",
+            "data-id": id,
+            disabled: locked
+          });
+
+          cardList.appendChild(cardButton);
+        });
+
+        updateProgress();
       }
 
       // สร้างหน้ากิจกรรม
@@ -285,26 +309,87 @@
 
         var instruction = App.ui.el("p", {
           className: "stage1-instruction",
-          textContent: "เรียงเหตุการณ์จากเก่าที่สุดไปใหม่ที่สุด"
+          textContent: "แตะการ์ดเพื่อเรียงเหตุการณ์จากเก่าสุดไปใหม่สุด"
         });
 
-        var cardList = App.ui.el("div", {
-          id: "stage1-card-list",
-          className: "stage1-card-list"
+        var boardTitle = App.ui.el("h3", {
+          className: "stage1-section-title",
+          textContent: "ลำดับเหตุการณ์ของคุณ"
         });
+
+        var progressTextElement = App.ui.el("p", {
+          className: "stage1-progress",
+          textContent: "เลือกแล้ว 0 / 10 ใบ"
+        });
+
+        progressText = progressTextElement;
+
+        var slotListElement = App.ui.el("div", {
+          className: "stage1-slot-list"
+        });
+
+        slotList = slotListElement;
+
+        var choiceTitle = App.ui.el("h3", {
+          className: "stage1-section-title",
+          textContent: "การ์ดเหตุการณ์"
+        });
+
+        var choiceInstruction = App.ui.el("p", {
+          className: "stage1-choice-instruction",
+          textContent: "แตะการ์ดด้านล่างเพื่อเติมลงในช่องว่าง หากเลือกผิดให้กด ×"
+        });
+
+        var cardListElement = App.ui.el("div", {
+          className: "stage1-choice-list"
+        });
+
+        cardList = cardListElement;
 
         var submitBar = App.ui.el("div", {
           className: "stage1-submit-bar"
         });
 
-        var submitButton = App.ui.el("button", {
+        var submitButtonElement = App.ui.el("button", {
           className: "btn stage1-submit-btn",
           type: "button",
-          textContent: "ส่งคำตอบ"
+          textContent: "ส่งคำตอบ",
+          disabled: true
         });
 
+        submitButton = submitButtonElement;
+
+        // แตะการ์ดที่ยังไม่ได้เลือก
+        addEvent(cardList, "click", function (event) {
+          if (locked || completed) return;
+
+          var target = event.target.closest(
+            '[data-action="select"]'
+          );
+
+          if (!target || !cardList.contains(target)) return;
+
+          selectCard(target.getAttribute("data-id"));
+        });
+
+        // กด X เพื่อนำการ์ดออก
+        addEvent(slotList, "click", function (event) {
+          if (locked || completed) return;
+
+          var target = event.target.closest(
+            '[data-action="remove"]'
+          );
+
+          if (!target || !slotList.contains(target)) return;
+
+          var index = Number(target.getAttribute("data-index"));
+
+          removeCard(index);
+        });
+
+        // ส่งคำตอบ
         addEvent(submitButton, "click", function () {
-          if (finished) return;
+          if (locked || completed || !isComplete()) return;
 
           finish(false);
         });
@@ -313,11 +398,29 @@
 
         container.appendChild(heading);
         container.appendChild(instruction);
-        container.appendChild(cardList);
+
+        var board = App.ui.el("section", {
+          className: "stage1-board"
+        });
+
+        board.appendChild(boardTitle);
+        board.appendChild(progressTextElement);
+        board.appendChild(slotListElement);
+
+        var choices = App.ui.el("section", {
+          className: "stage1-choices"
+        });
+
+        choices.appendChild(choiceTitle);
+        choices.appendChild(choiceInstruction);
+        choices.appendChild(cardListElement);
+
+        container.appendChild(board);
+        container.appendChild(choices);
         container.appendChild(submitBar);
 
         shuffleCards();
-        renderCards(null);
+        renderBoard();
 
         timerBar = App.timer.renderBar(container, 1);
 
@@ -331,21 +434,16 @@
           },
 
           onExpire: function () {
-            if (finished) return;
+            if (completed || locked) return;
 
-            if (highlightTimeout !== null) {
-              clearTimeout(highlightTimeout);
-              highlightTimeout = null;
-            }
+            locked = true;
 
-            finished = true;
-
-            // ล็อกปุ่มทั้งหมดทันที
+            // ปิดการใช้งานทั้งหมดทันที
             submitButton.disabled = true;
 
-            var buttons = cardList.querySelectorAll("button");
+            var choiceButtons = cardList.querySelectorAll("button");
 
-            buttons.forEach(function (button) {
+            choiceButtons.forEach(function (button) {
               button.disabled = true;
             });
 
@@ -361,13 +459,9 @@
 
             container.appendChild(message);
 
-            // รอ 1.5 วินาทีก่อนส่งผล
-            highlightTimeout = setTimeout(function () {
-              highlightTimeout = null;
-
-              if (finished) {
-                finishTimeout();
-              }
+            timeoutId = setTimeout(function () {
+              timeoutId = null;
+              finish(true);
             }, 1500);
           }
         });
@@ -375,24 +469,11 @@
         timer.start();
       }
 
-      // ส่งผลหลังหมดเวลา
-      function finishTimeout() {
-        if (!finished) return;
-
-        var timeUsed = durationSec;
-
-        cleanup();
-
-        if (typeof options.onDone === "function") {
-          options.onDone({
-            answers: {
-              order: order.slice()
-            },
-            timeUsedSec: timeUsed,
-            timedOut: true
-          });
-        }
-      }
+      // ตัวแปรอ้างอิงส่วนแสดงผล
+      var progressText = null;
+      var slotList = null;
+      var cardList = null;
+      var submitButton = null;
 
       showIntroduction();
     }
