@@ -7,7 +7,7 @@
 
   // ค่าตั้งค่ากลางของเกม
   window.App.config = {
-    API_URL: "PASTE_APPS_SCRIPT_WEB_APP_URL_HERE",
+    API_URL: "https://script.google.com/macros/s/AKfycbz234hokvyN0R5hmexmYGkhyDcwV33HO7Gl-Ct3imERygHPqMDz4S20uqWmI886kTU/exec",
 
     CLASS_LIST: [
       "ม.6/1",
