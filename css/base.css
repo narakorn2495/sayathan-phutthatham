@@ -287,3 +287,72 @@ video,
 iframe {
   max-width: 100%;
 }
+
+
+/* ========================================
+   Shared Game Timer
+   ใช้ร่วมกันทุกด่าน
+   ======================================== */
+
+.game-timer {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding: 12px 14px;
+  margin: 0 0 16px;
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  transition: background 0.2s ease;
+}
+
+.game-timer__label {
+  margin-bottom: 8px;
+  font-weight: 700;
+  font-size: 15px;
+  text-align: center;
+}
+
+.game-timer__track {
+  width: 100%;
+  height: 10px;
+  overflow: hidden;
+  background: #eee8df;
+  border-radius: 20px;
+}
+
+.game-timer__progress {
+  width: 100%;
+  height: 100%;
+  background: #397bbd;
+  border-radius: inherit;
+  transition: width 0.25s linear, background 0.2s ease;
+}
+
+.game-timer--warning {
+  background: #fff5e9;
+  border-color: var(--warning-color);
+}
+
+.game-timer--warning .game-timer__label {
+  color: #a85d08;
+}
+
+.game-timer--warning .game-timer__progress {
+  background: var(--warning-color);
+}
+
+.game-timer--expired {
+  background: #fff0ed;
+  border-color: var(--error-color);
+}
+
+.game-timer--expired .game-timer__label {
+  color: var(--error-color);
+}
+
+.game-timer--expired .game-timer__progress {
+  background: var(--error-color);
+}
+
