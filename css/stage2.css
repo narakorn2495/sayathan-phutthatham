@@ -1,1 +1,292 @@
+/* ========================================
+   Stage 2 — Match Lands and Traits
+   Theme: Blue
+======================================== */
 
+.stage2-heading {
+  color: var(--stage2-color);
+  margin-bottom: 8px;
+}
+
+.stage2-title {
+  margin: 8px 0;
+  color: #315d83;
+  line-height: 1.5;
+}
+
+.stage2-instruction {
+  color: var(--muted-color);
+  margin: 8px 0 16px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+/* ข้อมูลก่อนเริ่ม */
+
+.stage2-info {
+  padding: 12px 14px;
+  margin: 10px 0;
+  background: var(--stage2-light);
+  border: 1px solid #c8def2;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.stage2-start-btn {
+  margin-top: 20px;
+  background: var(--stage2-color);
+}
+
+/* แถบสถานะ */
+
+.stage2-status {
+  position: sticky;
+  top: 82px;
+  z-index: 18;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 12px;
+  margin: 12px 0 8px;
+  background: #ffffff;
+  border: 1.5px solid #b9d4ed;
+  border-left: 5px solid var(--stage2-color);
+  border-radius: 11px;
+  box-shadow: 0 3px 12px rgba(40, 80, 120, 0.09);
+}
+
+.stage2-status__instruction {
+  color: #285b88;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.stage2-status__progress {
+  color: var(--stage2-color);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* ข้อความแจ้งเตือน */
+
+.stage2-notice {
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+  color: var(--muted-color);
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.stage2-notice:not(:empty) {
+  padding: 9px 12px;
+  margin: 8px 0;
+  background: #edf4fc;
+  border-radius: 9px;
+}
+
+.stage2-notice--info {
+  color: #285b88;
+  background: #edf4fc !important;
+}
+
+.stage2-notice--warning {
+  color: #96600e;
+  background: #fff5e5 !important;
+}
+
+.stage2-notice--timeout {
+  color: #b83232;
+  background: #fff0ed !important;
+  font-size: 17px;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* กลุ่มการ์ด */
+
+.stage2-section {
+  margin: 18px 0 22px;
+}
+
+.stage2-section-title {
+  margin: 12px 0 4px;
+  color: #315d83;
+  font-size: 18px;
+}
+
+.stage2-section-instruction {
+  margin: 4px 0 12px;
+  color: var(--muted-color);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* รายการการ์ดแนวตั้ง */
+
+.stage2-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* การ์ดพื้นฐาน */
+
+.stage2-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  min-height: 62px;
+  padding: 13px 14px;
+  background: #ffffff;
+  border: 1.5px solid #cbdceb;
+  border-left: 5px solid var(--stage2-color);
+  border-radius: 11px;
+  color: #34495e;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.6;
+  text-align: left;
+  overflow-wrap: anywhere;
+  box-shadow: 0 2px 6px rgba(40, 70, 100, 0.05);
+  cursor: pointer;
+  touch-action: manipulation;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.stage2-card:active {
+  transform: scale(0.985);
+}
+
+.stage2-card__text {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.stage2-card__number {
+  flex-shrink: 0;
+  padding: 5px 8px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.75);
+  color: #263746;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+
+/* การ์ดที่กำลังเลือก */
+
+.stage2-card--selected {
+  background: #e4f2ff;
+  border: 2px solid #1769aa;
+  border-left: 6px solid #1769aa;
+  box-shadow: 0 0 0 3px rgba(23, 105, 170, 0.12);
+}
+
+/* สีของคู่ที่จับแล้ว
+   ใช้ทั้งสีและหมายเลขร่วมกัน */
+
+.stage2-pair--1 {
+  background: #e4f1ff;
+  border-color: #3679bd;
+  border-left-color: #3679bd;
+}
+
+.stage2-pair--2 {
+  background: #e3f5ee;
+  border-color: #31966d;
+  border-left-color: #31966d;
+}
+
+.stage2-pair--3 {
+  background: #fff0d9;
+  border-color: #d58b24;
+  border-left-color: #d58b24;
+}
+
+.stage2-pair--4 {
+  background: #f2e9ff;
+  border-color: #8960bd;
+  border-left-color: #8960bd;
+}
+
+.stage2-pair--5 {
+  background: #ffe9ee;
+  border-color: #cc6380;
+  border-left-color: #cc6380;
+}
+
+.stage2-pair--6 {
+  background: #e4f2f4;
+  border-color: #398c9a;
+  border-left-color: #398c9a;
+}
+
+/* การ์ดที่ถูกล็อก */
+
+.stage2-card--locked {
+  cursor: not-allowed;
+  opacity: 0.9;
+}
+
+/* ปุ่มส่งคำตอบ */
+
+.stage2-submit-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 15;
+  padding: 12px 0;
+  margin-top: 12px;
+  background: linear-gradient(
+    to bottom,
+    rgba(248, 244, 237, 0),
+    var(--bg-color) 25%
+  );
+}
+
+.stage2-submit-btn {
+  background: var(--stage2-color);
+  box-shadow: 0 3px 12px rgba(40, 80, 120, 0.15);
+}
+
+.stage2-submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* มือถือจอเล็ก */
+
+@media (max-width: 360px) {
+  .stage2-status {
+    top: 78px;
+    padding: 10px;
+  }
+
+  .stage2-card {
+    gap: 7px;
+    padding: 12px 10px;
+    font-size: 13px;
+  }
+
+  .stage2-card__number {
+    padding: 4px 6px;
+    font-size: 10px;
+  }
+
+  .stage2-section-title {
+    font-size: 17px;
+  }
+}
