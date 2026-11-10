@@ -18,6 +18,47 @@
 
     return remainingSeconds + " วินาที";
   }
+  
+  // เตรียมข้อมูลสำหรับส่งไปยัง Backend
+  function createSubmissionPayload(student, stages, scores) {
+    function getStageData(key) {
+      var stage = stages[key];
+
+      if (!stage) {
+        throw new Error("ไม่พบข้อมูลผลการเล่น " + key);
+      }
+
+      var time = Number(stage.timeUsedSec);
+
+      if (!Number.isFinite(time)) {
+        throw new Error("ข้อมูลเวลาไม่ถูกต้อง " + key);
+      }
+
+      return {
+        score: scores[key],
+        time_sec: Math.min(125, Math.max(0, Math.round(time)))
+      };
+    }
+
+    if (!student || !student.uid) {
+      throw new Error("ไม่พบ UID ของนักเรียน");
+    }
+
+    return {
+      action: "submit",
+      uid: student.uid,
+
+      s1: getStageData("s1"),
+      s2: getStageData("s2"),
+      s3: getStageData("s3"),
+
+      answers: {
+        s1: stages.s1.answers,
+        s2: stages.s2.answers,
+        s3: stages.s3.answers
+      }
+    };
+  }
 
   App.screens.result = {
     enter: function (options) {
@@ -39,6 +80,14 @@
 
       // คำนวณคะแนน
       var scores = App.scoring.scoreAll(stages);
+
+      // สถานะการบันทึกคะแนน
+      var saveStatus = App.ui.el("p", {
+        className: "result-save-status",
+        textContent: "กำลังบันทึกผลคะแนน..."
+      });
+
+saveStatus.setAttribute("role", "status");
 
       // ส่วนหัวและคะแนนรวม
       var header = App.ui.el("div", {
@@ -69,6 +118,7 @@
       header.appendChild(message);
       header.appendChild(totalScore);
       header.appendChild(totalLabel);
+      header.appendChild(saveStatus);
 
       // ส่วนคะแนนแยกแต่ละด่าน
       var stageList = App.ui.el("div", {
@@ -170,6 +220,43 @@
       resultContainer.appendChild(actions);
 
       container.appendChild(resultContainer);
+      // ส่งผลคะแนนไปยัง Google Sheets
+        var student = options.student ||
+          (App.state && App.state.student);
+        
+        try {
+          var payload = createSubmissionPayload(
+            student,
+            stages,
+            scores
+          );
+        
+          App.api.submitResult(payload)
+            .then(function (result) {
+              saveStatus.textContent =
+                "บันทึกคะแนนสำเร็จแล้ว ✓";
+        
+              saveStatus.classList.add("result-save-status--success");
+        
+              console.log("บันทึกคะแนนสำเร็จ:", result);
+            })
+            .catch(function (error) {
+              saveStatus.textContent =
+                "บันทึกคะแนนไม่สำเร็จ: " + error.message;
+        
+              saveStatus.classList.add("result-save-status--error");
+        
+              console.error("บันทึกคะแนนไม่สำเร็จ:", error);
+            });
+        
+        } catch (error) {
+          saveStatus.textContent =
+            "ไม่สามารถเตรียมข้อมูลบันทึกคะแนน: " + error.message;
+        
+          saveStatus.classList.add("result-save-status--error");
+        
+          console.error(error);
+        }
     }
   };
 })();
