@@ -255,16 +255,8 @@
       return attempt(0);
     }
 
-  window.App.api = {
-    getRoster: getRoster,
-    submitResult: submitResult
-  };
-
-    // คงเป็น stub สำหรับ Step 7
-    submitResult: function () {
-      return Promise.reject(
-        new Error("ระบบบันทึกผลยังไม่พร้อมใช้งาน")
-      );
-    }
-  };
+      window.App.api = {
+        getRoster: getRoster,
+        submitResult: submitResult
+      };
 })();
